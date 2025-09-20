@@ -1,0 +1,6 @@
+ccxt
+python-dotenv
+fastapi
+redis
+types-redis
+uvicorn
