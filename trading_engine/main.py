@@ -1,17 +1,31 @@
 import argparse
 import asyncio
 
-from trading_engine.logging import logger
-from .config import load_env, load_config
+from .utility import logger,load_env, load_config
 from .engine import TradingEngine
 
 async def main_async(config_path: str):
-    logger.info('Starting trading engine...')
-    api_key, api_secret = load_env()
+
     cfg = load_config(config_path)
-    logger.info('Config loaded successfully.')
+    api_key, api_secret = load_env(cfg.account.split("/")[0])
     engine = TradingEngine(cfg, api_key, api_secret)
-    await engine.run()
+
+    loop = asyncio.get_event_loop()
+    stop = asyncio.Event()
+    TradingEngine.setup_graceful_shutdown(loop, stop)
+
+    runner = asyncio.create_task(engine.run())
+    try:
+        await stop.wait()
+    finally:
+        logger.info("Shutting down...")
+        engine.running = False
+        runner.cancel()
+        try:
+            await runner
+        except asyncio.CancelledError:
+            pass
+        await engine.shutdown()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

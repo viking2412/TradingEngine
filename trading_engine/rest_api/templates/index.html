@@ -1,10 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Trading Engine UI</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        h1 { color: #333; }
+        .card {
+            border: 1px solid #ddd;
+            padding: 1em;
+            border-radius: 8px;
+            margin-bottom: 1.5em;
+            background: #f9f9f9;
+        }
+        button {
+            padding: 0.5em 1em;
+            margin: 0.3em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .reload { background: #4CAF50; color: white; }
+        .stop { background: #f44336; color: white; }
+    </style>
 </head>
 <body>
-$END$
+    <h1>Trading Engine Dashboard</h1>
+
+    <div class="card">
+        <h2>Position</h2>
+        {% if position %}
+            <p><strong>Size:</strong> {{ position.size }}</p>
+            <p><strong>Entry Price:</strong> {{ position.entry_price }}</p>
+        {% else %}
+            <p>No active position</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h2>Engine Control</h2>
+        <p>Status: <strong>{{ "Running" if running else "Stopped" }}</strong></p>
+        <button class="reload" onclick="reloadConfig()">Reload Config</button>
+        <button class="stop" onclick="stopEngine()">Stop Engine</button>
+    </div>
+
+    <script>
+        async function reloadConfig() {
+            await fetch('/config/reload', {method: 'POST'});
+            alert("Config reloaded!");
+        }
+        async function stopEngine() {
+            await fetch('/stop', {method: 'POST'});
+            alert("Engine stopping...");
+        }
+    </script>
 </body>
 </html>

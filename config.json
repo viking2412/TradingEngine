@@ -1,6 +1,6 @@
 {
   "account": "Bybit/Testnet",
-  "symbol": "BTC/USDT",
+  "symbol": "BTC/USDT:USDT",
   "side": "short",
   "market_order_amount": 2000,
   "stop_loss_percent": 7,
@@ -10,19 +10,19 @@
   "move_sl_to_breakeven": true,
   "tp_orders": [
     {
+      "price_percent": 0.5,
+      "quantity_percent": 25.0
+    },
+    {
       "price_percent": 2.0,
       "quantity_percent": 25.0
     },
     {
-      "price_percent": 5.0,
+      "price_percent": 1.5,
       "quantity_percent": 25.0
     },
     {
-      "price_percent": 7.0,
-      "quantity_percent": 25.0
-    },
-    {
-      "price_percent": 3.0,
+      "price_percent": 1.0,
       "quantity_percent": 25.0
     }
   ],

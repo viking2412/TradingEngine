@@ -29,8 +29,8 @@ class TradeConfig:
     @staticmethod
     def from_dict(d: Dict):
         """Convert dict from JSON into TradeConfig instance"""
-        tp_orders = [d['tp_orders']]
-        limit_orders = d['limit_orders']
+        tp_orders = [TPOrderConfig(**t) for t in d.get('tp_orders', [])]
+        limit_orders = LimitGridConfig(**d.get('limit_orders', {}))
         return TradeConfig(
             account=d['account'],
             symbol=d['symbol'],
@@ -44,3 +44,5 @@ class TradeConfig:
             tp_orders=tp_orders,
             limit_orders=limit_orders,
         )
+
+    #масив діктів в tp orders
