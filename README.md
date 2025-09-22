@@ -18,7 +18,19 @@ python -m venv .venv
 source .venv/bin/activate   # (або .venv\Scripts\activate на Windows)
 pip install -r requirements.txt
 ```
-**2. Запуск**
+**2. Вказування API ключів**
+
+В файлі **.env** навпроти відповідних полів для кожної біржі вказати ваші дані
+```python
+# Bybit Testnet API
+BYBIT_API_KEY= # your API for bybit goes here
+BYBIT_API_SECRET= # your Secret key for bybit goes here
+
+# Gate.io Testnet API
+GATE_API_KEY= # your API for gate goes here
+GATE_API_SECRET= # your Secret key for gate goes here
+```
+**3. Запуск**
 ```bash
 python -m trading_engine.main --config config.json
 ```
@@ -42,12 +54,13 @@ docker run -it --rm -p 8000:8000 trading-engine --config /app/config.json
 ## **⚙️ Конфігурація**
 
 Файл config.json повинен знаходитись у корені проекту (або передаватись іншим шляхом).
+Якщо замінити в полі "account": Bybit на Gate, та вказати API ключі для Gate в файлі .env, торгівля буде відбуватися саме на Gate 
 
 Приклад:
 
 ```json
 {
-  "account": "Bybit/Testnet",
+  "account": "Bybit/Testnet", 
   "symbol": "BTC/USDT:USDT",
   "side": "short",
   "market_order_amount": 2000,
