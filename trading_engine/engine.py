@@ -23,10 +23,7 @@ class TradingEngine:
         self.api_key = api_key
         self.api_secret = api_secret
         self.running = False
-        #self.rest_app = FastAPI() if REST_AVAILABLE else None
         self._server = None
-        #if self.rest_app:
-            #self._setup_rest()
         self.exchange_connector = ExchangeConnector(config, api_key, api_secret)
         self.order_manager = OrderManager(exchange=self.exchange_connector.exchange, config=self.config)
 

@@ -61,8 +61,6 @@ class OrderManager:
         symbol = self.config.symbol
         side = 'buy' if self.config.side.lower() == 'long' else 'sell'
         prices = []
-        # For long: distribute prices below center_price down to center*(1-range_pct)
-        # For short: distribute prices above center_price up to center*(1+range_pct)
         for i in range(1, n + 1):
             fraction = i / (n + 1)
             if self.config.side.lower() == 'long':
@@ -121,7 +119,6 @@ class OrderManager:
             price = pos['entry_price'] * (1 + (tp.price_percent / 100.0) * (1 if self.config.side.lower() == 'long' else -1))
             market = self.exchange.market(symbol)
             contract_size = market.get("contractSize", 1)
-            # logger.info(f"Contract size: {contract_size}")
             qty = base_total * (tp.quantity_percent / 100.0) / contract_size # here
             qty = max(qty, 0.00000001)
             logger.info(f'Placing TP {side_tp} {qty:.8f} @ {price:.2f}')
@@ -143,11 +140,11 @@ class OrderManager:
         entry_price = float(
             position.get("entry_price") or position.get("entryPrice") or position.get("avgEntryPrice") or 0)
         size = float(position.get("size") or position.get("contracts") or 0)
-        side = self.config.side  # 'long' або 'short'
+        side = self.config.side  # 'long' or 'short'
 
         if entry_price == 0 or size == 0:
             logger.warning(f"Position is no more: {position}")
-            # Позиції немає -> видаляємо SL, якщо є
+            # Position is no more - deleting SL if exists
             if self.current_sl_order_id:
                 try:
                     await self.exchange.cancel_order(self.current_sl_order_id, self.config.symbol)
@@ -166,19 +163,11 @@ class OrderManager:
         current_price = ticker["last"]
         # sl_price = base_sl_price
 
-        # if self.trailing_active:
-        #     if side == "long":
-        #         trailed_price = current_price * (1 - trailing_offset / 100)
-        #         sl_price = max(base_sl_price, trailed_price)
-        #     else:  # short
-        #         trailed_price = current_price * (1 + trailing_offset / 100)
-        #         sl_price = min(base_sl_price, trailed_price)
-
         if not self.trailing_active:
-            # до активації — тільки статичний базовий SL
+            # static SL before activation
             sl_price = base_sl_price
         else:
-            # після активації — тільки трейлінг, без повернення назад
+            # after activation only trailing, no fall backs to static
             if side == "long":
                 trailed_price = current_price * (1 - trailing_offset / 100)
                 sl_price = max(self.last_sl_price or base_sl_price, trailed_price)
@@ -186,7 +175,7 @@ class OrderManager:
                 trailed_price = current_price * (1 + trailing_offset / 100)
                 sl_price = min(self.last_sl_price or base_sl_price, trailed_price)
 
-        # зберігаємо останній SL, щоб не рухати назад
+        # saving last SL, to not move SL back
         self.last_sl_price = sl_price
 
         if not self.trailing_active:

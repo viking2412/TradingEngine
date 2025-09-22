@@ -9,15 +9,11 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 def create_app(engine) -> FastAPI:
     """
-    Фабрика FastAPI-додатку, отримує engine при створенні.
+    Fastapi app, receives engine instance when created
     """
     app = FastAPI(title="Trading Engine UI")
-
-    # збережемо engine в app.state
     app.state.engine = engine
     app.state.templates = templates
-
-    # підключаємо маршрути
     app.include_router(router)
 
     return app
