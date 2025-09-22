@@ -1,7 +1,0 @@
-ccxt
-python-dotenv
-fastapi
-redis
-types-redis
-uvicorn
-Jinja2Templates
