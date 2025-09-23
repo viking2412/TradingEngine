@@ -44,7 +44,7 @@ docker build -t trading-engine .
 2. Запустити контейнер
 
 ```bash
-docker run -it --rm -p 8000:8000 trading-engine --config /app/config.json
+docker run -it --rm -p 8000:8000 --env-file .env trading-engine --config /app/config.json
 ```
 3. Веб-інтерфейс
 Після запуску відкрий у браузері: http://localhost:8000

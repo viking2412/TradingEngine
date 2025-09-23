@@ -1,8 +1,3 @@
-FROM ubuntu:latest
-LABEL authors="Kuroko"
-
-ENTRYPOINT ["top", "-b"]
-
 FROM python:3.11-slim
 
 RUN apt-get update && apt-get install -y \
